@@ -27,12 +27,12 @@ class InterfaceController: WKInterfaceController {
     @IBOutlet var paceCount: WKInterfaceLabel!
     
     // MARK: - Properties
-    private let corePedometer = CMPedometer()
+    fileprivate let corePedometer = CMPedometer()
     
     
     // MARK: - Context Initializer
-    override func awakeWithContext(context: AnyObject?) {
-        super.awakeWithContext(context)
+    override func awake(withContext context: Any?) {
+        super.awake(withContext: context)
         // Configure interface objects here.
         
         // set text labels
@@ -59,19 +59,19 @@ class InterfaceController: WKInterfaceController {
         super.didDeactivate()
         
         // to stop pedometer updates.. eg:now offscreen
-        self.corePedometer.stopPedometerUpdates()
+        self.corePedometer.stopUpdates()
     }
     
     
     // MARK: - Get Pedometer Updates
     func startPedometerUpdates(){
         // define start date
-        let startDate = NSDate()
+        let startDate = Date()
         
         // get CMPedometerData updates from startDate
         if CMPedometer.isPaceAvailable() {
             
-            self.corePedometer.startPedometerUpdatesFromDate(startDate, withHandler: { (data:CMPedometerData?, error:NSError?) -> Void in
+            self.corePedometer.startUpdates(from: startDate, withHandler: { (data:CMPedometerData?, error:NSError?) -> Void in
                 
                 if (error == nil) {
                     
@@ -83,14 +83,14 @@ class InterfaceController: WKInterfaceController {
                     print("Distance standard rounding : \(rounded)m")
                     
                     // set text labels
-                    self.stepsCount.setText("\(data!.numberOfSteps ?? 0)")
-                    self.floorsAscCount.setText("\(data!.floorsAscended! ?? 0)")
-                    self.floorsDesCount.setText("\(data!.floorsDescended! ?? 0)")
-                    self.distanceCount.setText("\(rounded ?? 0)m.")
-                    self.cadenceCount.setText("\(data!.currentCadence! ?? 0)m/s")
-                    self.paceCount.setText("\(data!.currentPace! ?? 0)sec/m")
+                    self.stepsCount.setText("\(data!.numberOfSteps)")
+                    self.floorsAscCount.setText("\(data!.floorsAscended!)")
+                    self.floorsDesCount.setText("\(data!.floorsDescended!)")
+                    self.distanceCount.setText("\(rounded)m.")
+                    self.cadenceCount.setText("\(data!.currentCadence!)m/s")
+                    self.paceCount.setText("\(data!.currentPace!)sec/m")
                 }
-            })
+            } as! CMPedometerHandler)
         }
     }
 

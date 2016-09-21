@@ -15,15 +15,15 @@ class ViewController: UIViewController {
     @IBOutlet weak var pedometerLabel: UILabel!
     
     // MARK: - Constants
-    private let corePedometer = CMPedometer()
+    fileprivate let corePedometer = CMPedometer()
     
     // MARK: - Properties
-    private var steps = String()
-    private var floorsAsc = String()
-    private var floorsDes = String()
-    private var distance = String()
-    private var cadence = String()
-    private var pace = String()
+    fileprivate var steps = String()
+    fileprivate var floorsAsc = String()
+    fileprivate var floorsDes = String()
+    fileprivate var distance = String()
+    fileprivate var cadence = String()
+    fileprivate var pace = String()
     
     // MARK: - Calls
     override func viewDidLoad() {
@@ -41,14 +41,14 @@ class ViewController: UIViewController {
     // MARK: - Get Pedometer Updates
     func setPedometer(){
         // define start date
-        let startDate = NSDate()
+        let startDate = Date()
         
         // get the current pedometer updates
         if CMPedometer.isStepCountingAvailable() {
-            self.corePedometer.startPedometerUpdatesFromDate(startDate, withHandler: { (data:CMPedometerData?, error:NSError?) -> Void in
+            self.corePedometer.startUpdates(from: startDate, withHandler: { (data:CMPedometerData?, error:NSError?) -> Void in
                 
                 // GCD perform
-                dispatch_async(dispatch_get_main_queue(), { () -> Void in
+                DispatchQueue.main.async(execute: { () -> Void in
                     
                     if (error == nil) {
                         
@@ -80,7 +80,7 @@ class ViewController: UIViewController {
                         self.pedometerLabel.text = self.steps + self.floorsAsc + self.floorsDes + self.distance + self.cadence + self.pace
                     }
                 })
-            })
+            } as! CMPedometerHandler)
         }
     }
 
